@@ -30,7 +30,9 @@ Looking to test special character encodings to see if there are any bugs or if i
 
 ### Affected Components
 
-[Which parts of the codebase are involved?]
+clients/client-python/gravitino/filesystem/gvfs_storage_handler.py 
+clients/client-python/gravitino/filesystem/gvfs_utils.py — add helper if needed?
+clients/client-python/tests/unittests/test_gvfs_filename_encoding.py — new test file
 
 ---
 
@@ -38,15 +40,16 @@ Looking to test special character encodings to see if there are any bugs or if i
 
 ### Environment Setup
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
+Because we are testing, we need to stay in the development environment. So, I cloned the repo and then downloaded rust. 
 
 ### Steps to Reproduce
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. Clone the repo
+2. Download rust with: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+3. cd client to see client files
 
 ### Reproduction Evidence
+- no reproduction of tests bc need to write tests first!
 
 - **Commit showing reproduction:** [Link to commit in your fork]
 - **Screenshots/logs:** [If applicable]
@@ -58,30 +61,39 @@ Looking to test special character encodings to see if there are any bugs or if i
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
+In gvfs_storage_handler.py there is no handling of non-ASCII encodings. This means the functions actual_path_to_gvfs_path() and actual_info_to_gvfs_info() could fail. 
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
+Using the actual_path_to_gvfs_path() in gvfs_storage_handler.py, I will test the function with non-ASCII encodings. 
 
 ### Implementation Plan
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:** In gvfs_storage_handler.py there is no handling of non-ASCII encodings. This means the functions actual_path_to_gvfs_path() and actual_info_to_gvfs_info() could fail. 
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+**Match:** Existing integrations exists like test_gvfs_with_s3.py, test_gvfs_with_gcs.py, and test_gvfs_with_hdfs.py in clients/client-python/tests/integration/ show the pattern for how GVFS file operations are tested
 
-**Plan:** [Step-by-step implementation plan]
-1. [Modify file X to do Y]
-2. [Add function Z]
-3. [Update tests]
+**Plan:** 
+1. Run existing local tests (cd clients/client-python and pytest tests/ -k "local" -v)
+2. Create a new test file following the integration test files above 
+3. Write unit tests for actual_path_to_gvfs_path() for filenames such as spaces, signs such as #, %, &, ?, unicode (ex. other languages), emojis, and other special characters ex. /
+4. If tests fail, test where the encoding/decoding needs to be
+5. Check gvfs_utils.py for any handlers 
 
-**Implement:** [Link to your branch/commits as you work]
+**Implement:** https://github.com/mariamjafri/gravitino/tree/fix-issue-5869
 
-**Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
+**Review:** From contributing.md: 
+- Use feature branches
+- Write clear commit messages and PR descriptions
+- Link to issues (e.g., Fixes #123)
+- Respond to reviewer feedback
+- Follow Java and Python idioms
+- Include useful comments
+- Format with Spotless
 
-**Evaluate:** [How will you verify it works?]
+**Evaluate:** The new tests cases should pass with pytest tests/unittests/test_gvfs_filename_encoding.py -v and baseline from above should also still pass 
 
 ---
 
