@@ -2,8 +2,11 @@
 ]
 
 **Contribution Number:** 1
+
 **Student:** Mariam Jafri
+
 **Issue:** https://github.com/apache/gravitino/issues/5869
+
 **Status:** Phase 1
 
 ---
@@ -22,11 +25,11 @@ Looking to test special character encodings to see if there are any bugs or if i
 
 ### Expected Behavior
 
-[What should happen?]
+Unit tests should reveal whether the functions are passing with special characters or not. 
 
 ### Current Behavior
 
-[What actually happens?]
+There are no tests for special characters yet. 
 
 ### Affected Components
 
@@ -50,10 +53,6 @@ Because we are testing, we need to stay in the development environment. So, I cl
 
 ### Reproduction Evidence
 - no reproduction of tests bc need to write tests first!
-
-- **Commit showing reproduction:** [Link to commit in your fork]
-- **Screenshots/logs:** [If applicable]
-- **My findings:** [What you discovered during reproduction]
 
 ---
 
@@ -101,50 +100,48 @@ Using UMPIRE framework (adapted):
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+- [ ] Test case : test_actual_path_to_gvfs_path_special_filenames: A special-character file name maps back to the matching gvfs path
+- [ ] Test case 2: test_actual_path_to_gvfs_path_special_nested_dirs(self): Special characters inside nested directory segments survive
+- [ ] Test case 3: test_actual_info_to_gvfs_info_special_filenames(self): File-info conversion rewrites the name and passes metadata through.
+- [ ] Test case 4: test_round_trip_special_chars_in_sub_path(self): A gvfs path with a special-character sub-path round-trips cleanly
+- [ ] Test case 5: test_round_trip_special_chars_in_fileset_name(self): Special characters in the fileset name segment are preserved
+- [ ] Test case 6: test_actual_path_to_gvfs_path_recurring_prefix_segment(self): actual_path_to_gvfs_path uses str.replace(actual_prefix, ...), which replaces *every* occurrence of the prefix string rather than only the leading one.
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+- N/A
 
 ### Manual Testing
 
-[What you tested manually and results]
+pytest tests/unittests/test_gvfs_filename_encoding.py -v → **5 passed, 1 xfailed, 100 subtests passed**.
 
 ---
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week 1 Progress
 
-[What you built this week, challenges faced, decisions made]
-
-### Week [Y] Progress
-
-[Continue documenting as you work]
+Wrote unit tests and tested. 
 
 ### Code Changes
 
-- **Files modified:** [List]
-- **Key commits:** [Links to important commits]
-- **Approach decisions:** [Why you chose certain approaches]
+- **Files modified:** tests/unittests/test_gvfs_filename_encoding.py
+- **Key commits:** https://github.com/apache/gravitino/compare/main...mariamjafri:gravitino:fix-issue-5869
+- **Approach decisions:** Focused on testing each of the specified functions with a list of special characters. 
 
 ---
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** https://github.com/apache/gravitino/pull/11797
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**PR Description:** Added a new unit-test file: tests/unittests/test_gvfs_filename_encoding.py which tests file-name encodings that contain special characters in the GVFS path-conversion layer. 
 
 **Maintainer Feedback:**
 - [Date]: [Summary of feedback received]
 - [Date]: [How you addressed it]
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+**Status:** Awaiting Review
 
 ---
 
@@ -152,15 +149,15 @@ Using UMPIRE framework (adapted):
 
 ### Technical Skills Gained
 
-[What you learned technically]
+How to write and format unit tests - for example using @unittest.expectedFailure for tests that fail. 
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+Just understanding how many tests were needed. For example the last unit test may not be needed but was a technical encoding flaw, although hard to envounter because of the previous filtering lines. 
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+Start writing the tests earlier. I was nervous to start but it was a lot easier than expected. 
 
 ---
 
